@@ -75,7 +75,5 @@ for path, overlays in device_overlays.items():
 
             if resource_key not in system_resources_parsed[k]:
                 print(' ', '{} is not in {}/{}'.format(resource_key, BASE, k))
-                break
-
-            if resource_value == system_resources_parsed[k][resource_key]:
+            elif resource_value == system_resources_parsed[k][resource_key]:
                 print(' ', '{} is same as in system resources'.format(resource_key))

@@ -48,34 +48,34 @@ for device_path in DEVICE_PATHS:
             relative_path = str(absolute_path)[len('{}/{}/'.format(BASE, device_path)):]
             device_overlays[device_path][relative_path] = xmltodict.parse(absolute_path.read_text())
 
-system_overlays = {}
+system_resources = {}
 
 for relative_path in set(sum([list(device_overlays[x].keys()) for x in device_overlays.keys()], [])):
     absolute_path = '{}/{}'.format(BASE, relative_path)
 
     try:
         with open(absolute_path) as f:
-            system_overlays[relative_path] = xmltodict.parse(f.read())
+            system_resources[relative_path] = xmltodict.parse(f.read())
     except Exception as e:
         print(e)
 
-system_overlays_parsed = {}
+system_resources_parsed = {}
 
-for k, v in system_overlays.items():
-    system_overlays_parsed[k] = parse(v)
+for k, v in system_resources.items():
+    system_resources_parsed[k] = parse(v)
 
 for path, overlays in device_overlays.items():
     for k, v in overlays.items():
         print('{}/{}/{}'.format(BASE, path, k))
 
         for resource_key, resource_value in parse(v).items():
-            if k not in system_overlays_parsed:
+            if k not in system_resources_parsed:
                 print(' ', '{}/{} does not exist'.format(BASE, k))
                 break
 
-            if resource_key not in system_overlays_parsed[k]:
+            if resource_key not in system_resources_parsed[k]:
                 print(' ', '{} is not in {}/{}'.format(resource_key, BASE, k))
                 break
 
-            if resource_value == system_overlays_parsed[k][resource_key]:
-                print(' ', '{} is same as in system overlays'.format(resource_key))
+            if resource_value == system_resources_parsed[k][resource_key]:
+                print(' ', '{} is same as in system resources'.format(resource_key))
